@@ -189,13 +189,16 @@ body {
         padding: 10px;
         margin-top: 10px;
         text-transform: uppercase;
-
-        &:hover {
+        &:hover:not([disabled]) {
           cursor: pointer;
           color: #ffffff;
           background: #f6b93b;
           border-color: #f6b93b;
           transition: all 0.2s ease 0s;
+        }
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       }
     }
@@ -231,6 +234,17 @@ body {
         }
       }
     }
+  }
+  .error-message {
+    color: rgb(255, 200, 200);
+    padding: 3px 5px;
+    margin-bottom: 4px;
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    font-size: 12px;
+  }
+  .login-btn {
+
   }
 }
 
