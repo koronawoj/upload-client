@@ -1,0 +1,23 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  div {
+    display: flex;
+  }
+  a {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    text-decoration: none;
+    color: #494949;
+    text-transform: uppercase;
+    background: #ffffff;
+    padding: 10px 30px;
+    margin: 2px;
+    box-sizing: border-box;
+    &:hover {
+      @include info();
+      transition: all 0.2s ease 0s;
+    }
+  }
+}

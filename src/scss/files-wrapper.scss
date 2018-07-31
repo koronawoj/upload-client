@@ -1,0 +1,33 @@
+.files-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  .file-elem {
+    width: 200px;
+    height: 220px;
+    background-color: rgba(50, 50, 50, 0.5);
+    border: 1px solid #7d5e1f;
+    margin: 10px;
+    .file-image {
+      width: 200px;
+      max-width: 200px;
+      max-height: 200px;
+      height: 200px;
+      cursor: pointer;
+      @include background-image();
+    }
+    .file-action {
+      @include vertical-center();
+      height: 20px;
+      width: 100%;
+      text-transform: uppercase;
+      background-color: rgba(255, 0, 0, 0.1);
+      color: rgb(255, 200, 200);
+      border-top: 1px solid rgba(255, 0, 0, 0.3);
+
+      div {
+        margin: 5px 10px;
+      }
+    }
+  }
+}
