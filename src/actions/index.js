@@ -56,6 +56,7 @@ export const getFiles = (token) => async dispatch => {
             dispatch(loaderLinear(false));
         }, 200)
     } catch (error) {
+        dispatch(loaderLinear(false));
         dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
     }
 }

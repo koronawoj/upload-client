@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { getFiles, deleteFile } from '../actions'
+import {getFiles, deleteFile} from '../actions'
 import {connect} from 'react-redux'
 import {withRouter} from "react-router-dom";
 import FilesContainer from './FilesContainer';
+import requireAuth from './requireAuth';
 
 class Dashboard extends Component {
     state = {
@@ -11,7 +12,9 @@ class Dashboard extends Component {
     }
 
     componentWillMount() {
-        this.props.getFiles(this.props.isAuth);
+        if (this.props.isAuth) {
+            this.props.getFiles(this.props.isAuth);
+        }
     }
 
     handleSelectElem = (elem) => {
@@ -49,7 +52,7 @@ class Dashboard extends Component {
     render() {
         return (
             <div className="dashboard">
-                {this.props.files ? <div className="no-files">Upload some files</div> : (
+                {this.props.files === [] ? <div className="no-files">Upload some files</div> : (
                     <div>
                         <div className="show-image">
                             {this.state.selectedFile ? (
@@ -81,4 +84,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withRouter(connect(mapStateToProps, {getFiles, deleteFile})(Dashboard))
+export default requireAuth(withRouter(connect(mapStateToProps, {getFiles, deleteFile})(Dashboard)))
