@@ -161,6 +161,8 @@ class Signup extends Component {
                         <div className="error-message">{this.state.error.confPassword}</div> : null}
 
                 </div>
+                {this.props.errorMessage ?
+                    <div className="error-message">{this.props.errorMessage}</div> : null}
                 <button
                     disabled={this.validateAll()}
                     onSubmit={(e) => this.handleSubmit(e)}
@@ -174,7 +176,7 @@ class Signup extends Component {
 
 function mapStateToProps(state) {
     return {
-        showLoader: state.loader.linearLoader,
+        errorMessage: state.auth.errorMessageSignup,
     }
 }
 

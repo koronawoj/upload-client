@@ -1,9 +1,11 @@
-export const LOADING_LINEAR = 'LOADING_LINEAR';
-export const LOADING_SPINNER = 'LOADING_SPINNER';
-export const FETCH_DONE = 'FETCH_DONE';
 export const AUTH_USER = 'AUTH_USER';
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGOUT = 'LOGOUT';
 export const SET_USERNAME = 'SET_USERNAME';
 export const SET_USER = 'SET_USER';
 export const SET_FILES = 'SET_FILES';
+export const DELETE_FILE = 'DELETE_FILE';
+export const LOADING_BIG = 'LOADING_BIG';
+export const LOADING_SMALL = 'LOADING_SMALL';
+export const AUTH_ERROR_LOGIN = 'AUTH_USER_LOGIN';
+export const AUTH_ERROR_SIGNUP = 'AUTH_ERROR_SIGNUP';

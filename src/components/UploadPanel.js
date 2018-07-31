@@ -42,7 +42,7 @@ class UploadPanel extends Component {
 
     render() {
         return (
-            <div className="dashboard">
+            <div className="upload">
                 <div className="dropzone">
                     <Dropzone
                         accept="image/jpeg, image/png, image/gif, application/pdf"
@@ -58,7 +58,7 @@ class UploadPanel extends Component {
                     >
                         <div>
                             <p>Try dropping some files here, or click to select files to upload.</p>
-                            <p>Only *.jpeg, *.jpg, *.png, *.gif, *.pdf up to 5MB files will be accepted</p>
+                            <p>Only *.jpg, *.png, *.gif, *.pdf up to 5MB files will be accepted</p>
                         </div>
                     </Dropzone>
                     <div className="upload-status">
@@ -78,7 +78,7 @@ class UploadPanel extends Component {
                         {this.state.rejected.length !== 0 ? (
                             <div className="rejected-files">
                                 <p>Rejected files</p>
-                                <p>Only *.jpeg, *.jpg, *.png, *.gif, *.pdf up to 5MB files will be accepted</p>
+                                <p>Only *.jpg, *.png, *.gif, *.pdf up to 5MB files will be accepted</p>
                                 <ul>
                                     {this.state.rejected.map(f => <li
                                         key={f.name}>{f.name.toLowerCase()} - {this.bytesToSize(f.size)}</li>)}

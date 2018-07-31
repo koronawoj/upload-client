@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import {loaderLinear, login, uploadFiles, getFiles} from '../actions'
+import { getFiles, deleteFile } from '../actions'
 import {connect} from 'react-redux'
-import {withRouter, Link} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import FilesContainer from './FilesContainer';
 
 class Dashboard extends Component {
     state = {
-        selectedFile: ''
+        selectedFile: '',
+        renderImage: true
     }
 
     componentWillMount() {
@@ -14,31 +15,60 @@ class Dashboard extends Component {
     }
 
     handleSelectElem = (elem) => {
-        if (elem.slice(-3) !== "pdf") {
+        this.setState({
+            renderImage: false
+        }, () => {
+            if (elem.slice(-3) !== "pdf") {
+                this.setState({
+                    selectedFile: `url("http://localhost:3090/${elem}")`
+                })
+            } else {
+                window.open(`http://localhost:3090/${elem}`, "_blank")
+                this.setState({
+                    selectedFile: `url("../../resources/icons/pdf-ico.png")`
+                })
+            }
+        });
+
+        setTimeout(() => {
             this.setState({
-                selectedFile: `url("http://localhost:3090/${elem}")`
+                renderImage: true
             })
-        } else {
-            window.open(`http://localhost:3090/${elem}`, "_blank")
-            this.setState({
-                selectedFile: `url("../../resources/icons/pdf-ico.png")`
-            })
-        }
+        }, 150)
     }
+
+    handleDeleteElem = (elem) => {
+        this.setState({
+            selectedFile: ''
+        }, () => {
+            this.props.deleteFile(this.props.isAuth, elem);
+        })
+    }
+
 
     render() {
         return (
             <div className="dashboard">
-                <div>welcome {this.props.username}</div>
-                <div className="show-image">
-                    {this.state.selectedFile ? (
-                        <div style={{backgroundImage: this.state.selectedFile}}/>
-                    ) : (
-                        <div style={{backgroundImage: `url("../../resources/img-placeholder.jpg")`, opacity: "0.5"}}/>
-                    )}
-
-                </div>
-                <FilesContainer files={this.props.files} onSelect={this.handleSelectElem}/>
+                {this.props.files ? <div className="no-files">Upload some files</div> : (
+                    <div>
+                        <div className="show-image">
+                            {this.state.selectedFile ? (
+                                <div className={this.state.renderImage ? 'loader' : ''}
+                                     style={{backgroundImage: this.state.selectedFile}}/>
+                            ) : (
+                                this.props.files ? this.props.files.length !== 0 ? <div style={{
+                                    backgroundImage: `url("../../resources/img-placeholder.jpg")`,
+                                    opacity: "0.5"
+                                }}/> : null : null
+                            )}
+                        </div>
+                        <FilesContainer
+                            files={this.props.files}
+                            onSelect={this.handleSelectElem}
+                            onDelete={this.handleDeleteElem}
+                        />
+                    </div>
+                )}
             </div>
         )
     }
@@ -47,9 +77,8 @@ class Dashboard extends Component {
 function mapStateToProps(state) {
     return {
         isAuth: state.auth.authenticated,
-        username: state.user.username,
         files: state.user.files,
     }
 }
 
-export default withRouter(connect(mapStateToProps, {getFiles})(Dashboard))
+export default withRouter(connect(mapStateToProps, {getFiles, deleteFile})(Dashboard))

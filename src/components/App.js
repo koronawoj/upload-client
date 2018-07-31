@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
-import {Route, Link, Switch, withRouter } from 'react-router-dom';
+import {Route, Switch, withRouter } from 'react-router-dom';
 import Login from './Login'
 import Signup from './Signup'
 import Dashboard from './Dashboard'
 import LoginWrapper from './LoginWrapper'
+import Loader from './Loader'
 import Welcome from './Welcome'
 import UploadPanel from './UploadPanel'
+import Navigation from './Navigation'
 import {connect} from "react-redux";
 import { logout, checkTokenExist } from "../actions"
 
@@ -18,46 +20,22 @@ class App extends Component {
     render() {
         return (
             <div className="content-wrapper">
-                <div className="nav">
-                    <div className="left">
-                        <Link to="/">Home</Link>
-                        {this.props.isAuth ? (
-                            <div>
-                                <Link to="/dashboard">Dashboard</Link>
-                                <Link to="/upload">Upload</Link>
-                            </div>
-                        ) : null}
-                    </div>
-                    <div className="right">
-                        {this.props.isAuth ? (
-                            <div>
-                                <Link onClick={() => {this.props.logout()}} to="/">Logout</Link>
-                            </div>
-                        ) : (
-                            <div>
-                                <Link to="/login">Login</Link>
-                                <Link to="/signup">Signup</Link>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                {this.props.loading ? <Loader/> : null}
+                <Navigation isAuth={this.props.isAuth} onLogout={this.props.logout}/>
                 <Switch>
                     <Route exact path="/" component={Welcome}/>
-
-                    <Route path="/login" render={(props) => {
-                        return (
+                    <Route path="/login" render={props => (
                             <LoginWrapper props={props}>
                                 <Login/>
                             </LoginWrapper>
                         )
-                    }}/>
-                    <Route exact path="/signup" render={(props) => {
-                        return (
+                    }/>
+                    <Route exact path="/signup" render={props => (
                             <LoginWrapper props={props}>
                                 <Signup/>
                             </LoginWrapper>
                         )
-                    }}/>
+                    }/>
                     <Route path="/dashboard" component={Dashboard}/>
                     <Route path="/upload" component={UploadPanel}/>
                 </Switch>
@@ -69,8 +47,8 @@ class App extends Component {
 function mapStateToProps(state) {
     return {
         isAuth: state.auth.authenticated,
+        loading: state.loader.big,
     }
 }
 
-// export default App
 export default withRouter(connect(mapStateToProps, {logout, checkTokenExist})(App))

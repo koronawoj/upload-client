@@ -1,114 +1,95 @@
 import * as ACTION_TYPES from '../constans'
-import axios from 'axios'
+import { makeRequest } from '../actions/service'
+
 
 export const loaderLinear = (loading) => {
     return {
-        type: ACTION_TYPES.LOADING_LINEAR,
+        type: ACTION_TYPES.LOADING_BIG,
         payload: loading
     }
 }
 
 
 export const login = (data, callback) => async dispatch => {
-    function onSuccess(success) {
+    dispatch(loaderLinear(true));
+
+    try {
+        const success = await makeRequest('POST', 'signin', data, '');
 
         dispatch({type: ACTION_TYPES.AUTH_USER, payload: success.data.token});
         dispatch({type: ACTION_TYPES.SET_USER, payload: success.data});
 
         localStorage.setItem('token', success.data.token);
         localStorage.setItem('username', success.data.username);
-
+        dispatch(loaderLinear(false));
         callback();
-    }
-
-    function onError() {
-        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
-    }
-
-    try {
-        const success = await axios.post(
-            'http://localhost:3090/signin',
-            data
-        );
-        return onSuccess(success);
     } catch (error) {
-        return onError();
+        dispatch(loaderLinear(false));
+        dispatch({type: ACTION_TYPES.AUTH_ERROR_LOGIN, payload: error.response.data.error});
     }
 }
 
 export const signup = (data, callback) => async dispatch => {
-    function onSuccess(success) {
+    dispatch(loaderLinear(true));
+
+    try {
+        const success = await makeRequest('POST', 'signup', data, '');
+
         dispatch({type: ACTION_TYPES.AUTH_USER, payload: success.data.token});
-        dispatch({type: ACTION_TYPES.SET_USER, payload: success.data});
+        dispatch(loaderLinear(false));
         localStorage.setItem('token', success.data.token);
         localStorage.setItem('username', success.data.username);
         callback();
-    }
-
-    function onError() {
-        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
-    }
-
-    try {
-        const success = await axios.post(
-            'http://localhost:3090/signup',
-            data
-        );
-        return onSuccess(success);
     } catch (error) {
-        return onError();
+        dispatch(loaderLinear(false));
+        dispatch({type: ACTION_TYPES.AUTH_ERROR_SIGNUP, payload: error.response.data.error});
     }
 }
 
 export const getFiles = (token) => async dispatch => {
-    function onSuccess(success) {
-        dispatch({type: ACTION_TYPES.SET_FILES, payload: success.data.files});
-    }
-
-    function onError() {
-        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
-    }
+    dispatch(loaderLinear(true));
 
     try {
-        const success = await axios({
-            method: 'GET',
-            url: 'http://localhost:3090/getFiles',
-            headers: {
-                'authorization': token
-            }});
-        return onSuccess(success);
+        const success = await makeRequest('GET', 'getFiles', {}, token);
+        dispatch({type: ACTION_TYPES.SET_FILES, payload: success.data.files});
+        setTimeout(() => {
+            dispatch(loaderLinear(false));
+        }, 200)
     } catch (error) {
-        return onError();
+        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
+    }
+}
+
+export const deleteFile = (token, elem) => async dispatch => {
+    dispatch(loaderLinear(true));
+
+    try {
+        await makeRequest('DELETE', `upload/${elem.slice(8)}`, {}, token);
+
+        dispatch({type: ACTION_TYPES.DELETE_FILE, payload: elem});
+        setTimeout(() => {
+            dispatch(loaderLinear(false));
+        }, 200)
+
+    } catch (error) {
+        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
     }
 }
 
 export const uploadFiles = (data, token, callback) => async dispatch => {
-    function onSuccess(success) {
-        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
-
-
-        localStorage.setItem('token', token);
-        localStorage.setItem('username', success.data.username);
-
-        callback();
-    }
-
-    function onError() {
-        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
-    }
+    dispatch(loaderLinear(true));
 
     try {
-        const success = await axios({
-            method: 'POST',
-            url: 'http://localhost:3090/upload',
-            data: data,
-            headers: {
-            'authorization': token
-        }});
+        const success = await makeRequest('POST', "upload", data, token);
 
-        return onSuccess(success);
+        dispatch({type: ACTION_TYPES.SET_USER, payload: success.data});
+        setTimeout(() => {
+            callback();
+            dispatch(loaderLinear(false));
+        }, 500)
+
     } catch (error) {
-        return onError();
+        dispatch({type: ACTION_TYPES.AUTH_ERROR, payload: 'Invalid login credentials'});
     }
 }
 
@@ -117,9 +98,7 @@ export const logout = () => dispatch => {
     dispatch({type: ACTION_TYPES.LOGOUT});
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-
 }
-
 
 export const checkTokenExist = (callback) => dispatch => {
     let token = localStorage.getItem('token');
@@ -127,7 +106,7 @@ export const checkTokenExist = (callback) => dispatch => {
     token = token ? token : '';
     dispatch({type: ACTION_TYPES.AUTH_USER, payload: token});
     dispatch({type: ACTION_TYPES.SET_USERNAME, payload: username});
-    if(token) {
+    if (token) {
         callback()
     }
 }

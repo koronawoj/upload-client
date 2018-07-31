@@ -5,3 +5,27 @@ $white: #FFFFFF;
   justify-content: center;
   align-items: center;
 }
+
+@mixin success() {
+  color: rgb(200, 255, 200);
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+@mixin failure() {
+  color: rgb(255, 200, 200);
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+@mixin info() {
+  color: #ffffff;
+  background: #f6b93b;
+  border-color: #f6b93b;
+}
+
+@mixin background-image() {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

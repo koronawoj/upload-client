@@ -13,8 +13,9 @@ export default function (state = initialState, action) {
             return { ...state, username: action.payload.username,  files: action.payload.files};
         case ACTION_TYPES.SET_FILES:
             return { ...state, files: action.payload};
+        case ACTION_TYPES.DELETE_FILE:
+            return { ...state, files: state.files.filter(elem => elem !== action.payload)};
         default:
             return state;
     }
 }
-

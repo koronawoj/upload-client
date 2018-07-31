@@ -20,6 +20,7 @@ class Login extends Component {
             password: false,
         },
     }
+
     handleChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
@@ -49,7 +50,6 @@ class Login extends Component {
         }
     }
 
-
     handleSubmit = (e) => {
         e.preventDefault()
         let data = {
@@ -59,7 +59,6 @@ class Login extends Component {
         this.props.login(data, () => {
             this.props.history.push('/dashboard');
         });
-
     }
 
     validateAll = () => (
@@ -121,20 +120,27 @@ class Login extends Component {
                     {this.state.error.password ?
                         <div className="error-message">{this.state.error.password}</div> : null}
                 </div>
+                {this.props.errorMessage ?
+                    <div className="error-message">{this.props.errorMessage}</div> : null}
+
                 <button
                     disabled={this.validateAll()}
                     onSubmit={(e) => this.handleSubmit(e)}
-                >login
+                >
+                    login
                 </button>
             </form>
         )
     }
 }
 
+
+
 function mapStateToProps(state) {
     return {
-        showLoader: state.loader.linearLoader,
+        errorMessage: state.auth.errorMessageLogin,
     }
 }
+
 
 export default withRouter(connect(mapStateToProps, {loaderLinear, login})(Login))
